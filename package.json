@@ -1,0 +1,30 @@
+{
+  "name": "fury-project",
+  "version": "1.0.0",
+  "description": "browser 2d tank game",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --config webpack.config.js --watch --progress",
+    "lint": "eslint \"./bin/*.js\" \"./bin/**/*.js\" \"./test/**/*.js\" \"packages/**/!(node_modules)/*.ts\"  \"packages/**/!(node_modules)/**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KonstantinBalanchuk/fury-project.git"
+  },
+  "keywords": [],
+  "author": "Kostiantyn Balanchuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KonstantinBalanchuk/fury-project/issues"
+  },
+  "homepage": "https://github.com/KonstantinBalanchuk/fury-project#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "ts-loader": "^8.0.3",
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
