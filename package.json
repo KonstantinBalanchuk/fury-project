@@ -4,7 +4,7 @@
   "description": "browser 2d tank game",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --progress",
     "watch": "webpack --config webpack.config.js --watch --progress",
     "lint": "eslint \"./bin/*.js\" \"./bin/**/*.js\" \"./test/**/*.js\" \"packages/**/!(node_modules)/*.ts\"  \"packages/**/!(node_modules)/**/*.ts\""
   },
