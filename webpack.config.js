@@ -7,6 +7,9 @@ module.exports = {
     devtool: 'inline-source-map',
     mode: 'development',
     entry: './src/index.ts',
+    resolve: {
+        extensions: ['.js','.ts'] // add your other extensions here
+    },
     module: {
         rules: [
             {
