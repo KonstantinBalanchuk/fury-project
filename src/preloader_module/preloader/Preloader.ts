@@ -1,8 +1,11 @@
 import * as PIXI from 'pixi.js';
+import {GameScene} from "../../scenes/game";
 
 export class Preloader extends PIXI.Loader {
     private readonly app: PIXI.Application;
     private loadingBarInitialWidth: number = 0;
+    // private gameTextures: object = {};
+    private gameTextures: { [name: string]: PIXI.Sprite } = {};
 
     constructor(app: PIXI.Application, baseUrl: string) {
         super(baseUrl);
@@ -12,34 +15,56 @@ export class Preloader extends PIXI.Loader {
     protected loadAssets(loadingBar: PIXI.Sprite): void {
         this.add('eagle', 'board/eagle.png')
             .add('leaves', 'board/leaves.png')
-            .add('small_wall_1', 'board/small_wall_1.png')
-            .add('small_wall_2', 'board/small_wall_2.png')
-            .add('small_wall_3', 'board/small_wall_3.png')
-            .add('small_wall_4', 'board/small_wall_4.png')
-            .add('bonus_immortal', 'bonus/bonus_immortal.png')
-            .add('bonus_live', 'bonus/bonus_live.png')
-            .add('bonus_slow', 'bonus/bonus_slow.png')
-            .add('bonus_speed', 'bonus/bonus_speed.png')
-            .add('enemy_blue', 'tanks/enemy_blue.png')
-            .add('enemy_red', 'tanks/enemy_red.png')
-            .add('enemy_white', 'tanks/enemy_white.png')
+            .add('smallWallOne', 'board/small_wall_1.png')
+            .add('smallWallTwo', 'board/small_wall_2.png')
+            .add('smallWallThree', 'board/small_wall_3.png')
+            .add('smallWallFour', 'board/small_wall_4.png')
+            .add('bonusImmortal', 'bonus/bonus_immortal.png')
+            .add('bonusLive', 'bonus/bonus_live.png')
+            .add('bonusSlow', 'bonus/bonus_slow.png')
+            .add('bonusSpeed', 'bonus/bonus_speed.png')
+            .add('enemyBlue', 'tanks/enemy_blue.png')
+            .add('enemyRed', 'tanks/enemy_red.png')
+            .add('enemyWhite', 'tanks/enemy_white.png')
             .add('tank', 'tanks/tank.png')
             .add('appear', 'appear.png')
             .add('bullet', 'bullet.png')
             .add('button', 'button.png')
-            .add('enemy_bullet', 'enemy_bullet.png')
+            .add('enemyBullet', 'enemy_bullet.png')
             .add('explode', 'explode.png')
-            .add('explode_small', 'explode_small.png')
+            .add('explodeSmall', 'explode_small.png')
             .add('scores', 'scores.png')
             .add('menu', 'screens/scr1.png')
-            .load(this.switchToMenuScene.bind(this));
+            .load(this.onTexturesLoadingComplete.bind(this));
         this.onProgress.add((e) => {
             loadingBar.width = Math.floor(e.progress) / 100 * this.loadingBarInitialWidth;
         });
         this.onError.add(error => console.log(error));
     }
 
-    protected switchToMenuScene(): void {
+    protected onTexturesLoadingComplete(): void {
+        this.gameTextures = {
+            eagle: new PIXI.Sprite(this.resources['eagle'].texture),
+            leaves: new PIXI.Sprite(this.resources['leaves'].texture),
+            smallWallOne: new PIXI.Sprite(this.resources['smallWallOne'].texture),
+            smallWallTwo: new PIXI.Sprite(this.resources['smallWallTwo'].texture),
+            smallWallThree: new PIXI.Sprite(this.resources['smallWallThree'].texture),
+            smallWallFour: new PIXI.Sprite(this.resources['smallWallFour'].texture),
+            bonusImmortal: new PIXI.Sprite(this.resources['bonusImmortal'].texture),
+            bonusLive: new PIXI.Sprite(this.resources['bonusLive'].texture),
+            bonusSlow: new PIXI.Sprite(this.resources['bonusSlow'].texture),
+            bonusSpeed: new PIXI.Sprite(this.resources['bonusSpeed'].texture),
+            enemyBlue: new PIXI.Sprite(this.resources['enemyBlue'].texture),
+            enemyRed: new PIXI.Sprite(this.resources['enemyRed'].texture),
+            enemyWhite: new PIXI.Sprite(this.resources['enemyWhite'].texture),
+            tank: new PIXI.Sprite(this.resources['tank'].texture),
+            appear: new PIXI.Sprite(this.resources['appear'].texture),
+            bullet: new PIXI.Sprite(this.resources['bullet'].texture),
+            button: new PIXI.Sprite(this.resources['button'].texture),
+            enemyBullet: new PIXI.Sprite(this.resources['enemyBullet'].texture),
+            explode: new PIXI.Sprite(this.resources['explode'].texture),
+            explodeSmall: new PIXI.Sprite(this.resources['explodeSmall'].texture)
+        };
         const menuScreen = new PIXI.Sprite(this.resources["menu"].texture);
         const button = new PIXI.Graphics();
         const buttonWidth = 302;
@@ -68,11 +93,10 @@ export class Preloader extends PIXI.Loader {
 
     protected switchToGameScene(): void {
         this.app.stage.removeChildren();
-        const tank = new PIXI.Sprite(this.resources["tank"].texture);
-        tank.x = this.app.renderer.width  / 2;
-        tank.y = this.app.renderer.height / 2;
-        this.app.stage.addChild(tank);
+        const gameScene = new GameScene(this.app, this.gameTextures);
+        gameScene.createGameScene(gameScene);
     }
+
 
     protected onLoadingScene(): void {
         const sceneContainer = new PIXI.Container();
