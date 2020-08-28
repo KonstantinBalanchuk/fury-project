@@ -1,14 +1,15 @@
 import * as PIXI from 'pixi.js';
 
 export class Preloader extends PIXI.Loader {
-    private readonly app:PIXI.Application;
-    private loadingBarInitialWidth:number =  0;
+    private readonly app: PIXI.Application;
+    private loadingBarInitialWidth: number = 0;
+
     constructor(app: PIXI.Application, baseUrl: string) {
         super(baseUrl);
         this.app = app;
     }
 
-    protected loadAssets(loadingBar: PIXI.Sprite):void {
+    protected loadAssets(loadingBar: PIXI.Sprite): void {
         this.add('eagle', 'board/eagle.png')
             .add('leaves', 'board/leaves.png')
             .add('small_wall_1', 'board/small_wall_1.png')
@@ -30,29 +31,52 @@ export class Preloader extends PIXI.Loader {
             .add('explode', 'explode.png')
             .add('explode_small', 'explode_small.png')
             .add('scores', 'scores.png')
-            .load(this.setup.bind(this));
+            .add('menu', 'screens/scr1.png')
+            .load(this.switchToMenuScene.bind(this));
         this.onProgress.add((e) => {
             loadingBar.width = Math.floor(e.progress) / 100 * this.loadingBarInitialWidth;
         });
         this.onError.add(error => console.log(error));
     }
 
-    protected setup():void {
-        let sprite = new PIXI.Sprite(
-            this.resources["tank"].texture
-        );
-        this.app.stage.addChild(sprite);
+    protected switchToMenuScene(): void {
+        const menuScreen = new PIXI.Sprite(this.resources["menu"].texture);
+        const button = new PIXI.Graphics();
+        const buttonWidth = 302;
+        const buttonHeight = 62;
+        menuScreen.x = (this.app.renderer.width - menuScreen.width) / 2;
+        menuScreen.y = (this.app.renderer.height - menuScreen.height) / 2;
+
+
+        button.beginFill(0x000000, 0.01);
+        button.drawRect((this.app.renderer.width - buttonWidth) / 2, 525, buttonWidth, buttonHeight);
+        button.endFill();
+        button.interactive = true;
+        button.buttonMode = true;
+        button.on('pointerdown', this.switchToGameScene.bind(this));
+        this.app.stage.removeChildren();
+        this.app.stage.addChild(menuScreen);
+        this.app.stage.addChild(button);
+
     }
-    public initLoadingScene():void {
-        console.log(this.app);
+
+    public initLoadingScene(): void {
         this.add('loader-bar', 'loader-bar/loader-bar.png')
             .add('loader-bg', 'loader-bar/loader-bg.png')
             .load(this.onLoadingScene.bind(this));
     }
 
+    protected switchToGameScene(): void {
+        this.app.stage.removeChildren();
+        const tank = new PIXI.Sprite(this.resources["tank"].texture);
+        tank.x = this.app.renderer.width  / 2;
+        tank.y = this.app.renderer.height / 2;
+        this.app.stage.addChild(tank);
+    }
 
-    protected onLoadingScene():void {
+    protected onLoadingScene(): void {
         const sceneContainer = new PIXI.Container();
+        sceneContainer.name = 'gameContainer';
         this.app.stage.addChild(sceneContainer);
         const loadingBarWrapper = new PIXI.Sprite(
             this.resources['loader-bg'].texture
@@ -65,7 +89,7 @@ export class Preloader extends PIXI.Loader {
         loadingBarWrapper.x = (this.app.renderer.width - loadingBarWrapper.width) / 2;
         loadingBarWrapper.y = (this.app.renderer.height - loadingBarWrapper.height) / 2;
         loadingBar.x = (this.app.renderer.width - loadingBar.width) / 2;
-        loadingBar.y =( this.app.renderer.height - loadingBar.height) / 2;
+        loadingBar.y = (this.app.renderer.height - loadingBar.height) / 2;
         sceneContainer.addChild(loadingBarWrapper);
         sceneContainer.addChild(loadingBar);
     }
