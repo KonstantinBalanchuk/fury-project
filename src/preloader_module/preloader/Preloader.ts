@@ -94,7 +94,7 @@ export class Preloader extends PIXI.Loader {
     protected switchToGameScene(): void {
         this.app.stage.removeChildren();
         const gameScene = new GameScene(this.app, this.gameTextures);
-        gameScene.createGameScene(gameScene);
+        gameScene.createGameScene();
     }
 
 
