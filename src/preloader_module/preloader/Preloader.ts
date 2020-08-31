@@ -4,7 +4,6 @@ import {GameScene} from "../../scenes/game";
 export class Preloader extends PIXI.Loader {
     private readonly app: PIXI.Application;
     private loadingBarInitialWidth: number = 0;
-    // private gameTextures: object = {};
     private gameTextures: { [name: string]: PIXI.Sprite } = {};
 
     constructor(app: PIXI.Application, baseUrl: string) {

@@ -9,7 +9,7 @@ export class GameScene {
     // this variable is created for performance purpose: while it's false ticker invokes nothing
     private isKeyPressed: boolean = false;
     private player!: Character;
-    private readonly controlKeys: Array<string> = ['a', 's', 'w', 'd', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp'];
+    private readonly controlKeys: Array<string> = ['KeyA', 'KeyS', 'KeyW', 'KeyD', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp'];
 
     constructor(app: PIXI.Application, textures: { [name: string]: PIXI.Sprite }) {
         this.app = app;
@@ -25,32 +25,28 @@ export class GameScene {
     protected gameLoop(): void {
         if (this.isKeyPressed) {
             this.player.move(this.keys);
-            this.player.texture.x = this.player.coords.x;
-            this.player.texture.y = this.player.coords.y;
         }
     }
 
     public createGameScene() {
         this.init();
         this.player = new Character(this.textures.tank, new PIXI.Point(this.app.renderer.width / 2, this.app.renderer.height / 2));
-        this.player.texture.x = this.player.coords.x;
-        this.player.texture.y = this.player.coords.y;
         this.app.stage.addChild(this.player.texture);
         this.app.ticker.add(this.gameLoop, this);
     }
 
     protected registerKeyPress(event: KeyboardEvent): void {
-        if (event.key !== undefined && (this.controlKeys.indexOf(event.key) !== -1)) {
+        if (event.code !== undefined && (this.controlKeys.indexOf(event.code) !== -1)) {
             // Handle the event with KeyboardEvent.key and set handled true.
-            this.keys[event.key] = true;
+            this.keys[event.code] = true;
             this.isKeyPressed = true;
         }
     }
 
     protected registerKeyRelease(event: KeyboardEvent): void {
-        if (event.key !== undefined && (this.controlKeys.indexOf(event.key) !== -1)) {
+        if (event.code !== undefined && (this.controlKeys.indexOf(event.code) !== -1)) {
             // Handle the event with KeyboardEvent.key and set handled false.
-            this.keys[event.key] = false;
+            this.keys[event.code] = false;
             if(!Object.values(this.keys).some((element: boolean)  => element)) {
                 this.player.idle();
                 this.isKeyPressed = false;
