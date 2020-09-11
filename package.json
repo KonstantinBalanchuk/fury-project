@@ -30,6 +30,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@types/gsap": "^1.20.2",
     "@types/lodash": "^4.14.161",
     "gsap": "^3.5.1",
     "lodash": "^4.17.20",
