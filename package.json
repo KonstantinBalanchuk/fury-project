@@ -21,10 +21,19 @@
   "homepage": "https://github.com/KonstantinBalanchuk/fury-project#readme",
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.0.3",
+    "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "ts-loader": "^8.0.3",
     "typescript": "^4.0.2",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@types/gsap": "^1.20.2",
+    "@types/lodash": "^4.14.161",
+    "gsap": "^3.5.1",
+    "lodash": "^4.17.20",
+    "pixi.js": "^5.3.3"
   }
 }
