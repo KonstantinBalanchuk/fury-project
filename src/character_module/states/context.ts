@@ -1,4 +1,5 @@
 import {State} from "./state";
+import {ICollision} from "../../collider_module/ICollision";
 
 export class Context {
     /**
@@ -21,7 +22,7 @@ export class Context {
     /**
      * The Context delegates part of its behavior to the current State object.
      */
-    public move(direction: { [name: string]: boolean }): void {
+    public move(direction: { [name: string]: boolean }, platform: ICollision): void {
         this.state.move();
     }
 

@@ -15,6 +15,8 @@ export class Preloader extends PIXI.Loader {
         this.add('eagle', 'board/eagle.png')
             .add('leaves', 'board/leaves.png')
             .add('smallWallOne', 'board/small_wall_1.png')
+            .add('wall', 'board/wall.png')
+            .add('water', 'board/water.png')
             .add('smallWallTwo', 'board/small_wall_2.png')
             .add('smallWallThree', 'board/small_wall_3.png')
             .add('smallWallFour', 'board/small_wall_4.png')
@@ -44,6 +46,8 @@ export class Preloader extends PIXI.Loader {
     protected onTexturesLoadingComplete(): void {
         this.gameTextures = {
             eagle: new PIXI.Sprite(this.resources['eagle'].texture),
+            wall: new PIXI.Sprite(this.resources['wall'].texture),
+            water: new PIXI.Sprite(this.resources['water'].texture),
             leaves: new PIXI.Sprite(this.resources['leaves'].texture),
             smallWallOne: new PIXI.Sprite(this.resources['smallWallOne'].texture),
             smallWallTwo: new PIXI.Sprite(this.resources['smallWallTwo'].texture),
