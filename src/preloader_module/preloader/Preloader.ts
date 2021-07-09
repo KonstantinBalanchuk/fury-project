@@ -4,7 +4,6 @@ import {GameScene} from "../../scenes/game";
 export class Preloader extends PIXI.Loader {
     private readonly app: PIXI.Application;
     private loadingBarInitialWidth: number = 0;
-    private gameTextures: { [name: string]: PIXI.Sprite } = {};
 
     constructor(app: PIXI.Application, baseUrl: string) {
         super(baseUrl);
@@ -33,7 +32,7 @@ export class Preloader extends PIXI.Loader {
             .add('button', 'button.png')
             .add('enemyBullet', 'enemy_bullet.png')
             .add('explode', 'explode.png')
-            .add('explodeSmall', 'explode_small.png')
+            .add('smallExplode', 'explodeSmall.json')
             .add('scores', 'scores.png')
             .add('menu', 'screens/scr1.png')
             .load(this.onTexturesLoadingComplete.bind(this));
@@ -44,30 +43,8 @@ export class Preloader extends PIXI.Loader {
     }
 
     protected onTexturesLoadingComplete(): void {
-        this.gameTextures = {
-            eagle: new PIXI.Sprite(this.resources['eagle'].texture),
-            wall: new PIXI.Sprite(this.resources['wall'].texture),
-            water: new PIXI.Sprite(this.resources['water'].texture),
-            leaves: new PIXI.Sprite(this.resources['leaves'].texture),
-            smallWallOne: new PIXI.Sprite(this.resources['smallWallOne'].texture),
-            smallWallTwo: new PIXI.Sprite(this.resources['smallWallTwo'].texture),
-            smallWallThree: new PIXI.Sprite(this.resources['smallWallThree'].texture),
-            smallWallFour: new PIXI.Sprite(this.resources['smallWallFour'].texture),
-            bonusImmortal: new PIXI.Sprite(this.resources['bonusImmortal'].texture),
-            bonusLive: new PIXI.Sprite(this.resources['bonusLive'].texture),
-            bonusSlow: new PIXI.Sprite(this.resources['bonusSlow'].texture),
-            bonusSpeed: new PIXI.Sprite(this.resources['bonusSpeed'].texture),
-            enemyBlue: new PIXI.Sprite(this.resources['enemyBlue'].texture),
-            enemyRed: new PIXI.Sprite(this.resources['enemyRed'].texture),
-            enemyWhite: new PIXI.Sprite(this.resources['enemyWhite'].texture),
-            tank: new PIXI.Sprite(this.resources['tank'].texture),
-            appear: new PIXI.Sprite(this.resources['appear'].texture),
-            bullet: new PIXI.Sprite(this.resources['bullet'].texture),
-            button: new PIXI.Sprite(this.resources['button'].texture),
-            enemyBullet: new PIXI.Sprite(this.resources['enemyBullet'].texture),
-            explode: new PIXI.Sprite(this.resources['explode'].texture),
-            explodeSmall: new PIXI.Sprite(this.resources['explodeSmall'].texture)
-        };
+        const smallExplodeSheet = this.resources.smallExplode;
+        console.log(smallExplodeSheet, typeof smallExplodeSheet);
         const menuScreen = new PIXI.Sprite(this.resources["menu"].texture);
         const button = new PIXI.Graphics();
         const buttonWidth = 302;
@@ -96,10 +73,9 @@ export class Preloader extends PIXI.Loader {
 
     protected switchToGameScene(): void {
         this.app.stage.removeChildren();
-        const gameScene = new GameScene(this.app, this.gameTextures);
+        const gameScene = new GameScene(this.app, this.resources);
         gameScene.createGameScene();
     }
-
 
     protected onLoadingScene(): void {
         const sceneContainer = new PIXI.Container();

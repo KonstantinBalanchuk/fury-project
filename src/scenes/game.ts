@@ -7,7 +7,7 @@ import {Collider} from "../collider_module/Collider";
 
 export class GameScene {
     private readonly app: PIXI.Application;
-    private readonly textures: { [name: string]: PIXI.Sprite };
+    private readonly resources: PIXI.IResourceDictionary;
     private readonly keys: { [name: string]: boolean } = {};
     // this variable is created for performance purpose: while it's false ticker invokes nothing
     private isKeyPressed: boolean = false;
@@ -17,10 +17,10 @@ export class GameScene {
     private bullets: Bullet[] = [];
     private readonly controlKeys: Array<string> = ['KeyA', 'KeyS', 'KeyW', 'KeyD', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'];
 
-    constructor(app: PIXI.Application, textures: { [name: string]: PIXI.Sprite }) {
+    constructor(app: PIXI.Application, resources: PIXI.IResourceDictionary) {
         this.app = app;
         // this.app.view.offsetLeft =1 ;
-        this.textures = textures;
+        this.resources = resources;
     }
 
     protected init(): void {
@@ -40,24 +40,40 @@ export class GameScene {
         // bullet update position
         if(this.bullets?.length) {
             for(let b = this.bullets.length - 1; b >= 0; b--){
+                const { platform } = this.collider.calculateBulletCollisions(this.map, this.bullets[b]);
+                const { h,v } = platform;
+
                 this.bullets[b].position.x += Math.cos(this.bullets[b].rotation)*this.bullets[b].speed;
                 this.bullets[b].position.y += Math.sin(this.bullets[b].rotation)*this.bullets[b].speed;
-                // console.log(this.bullets[b]);
-
-                if(this.bullets[b].position.y < 0) {
-                    // console.log(this.bullets[b].position.y);
-                    // this.bullets[b].isExist = true;
+                if(this.isOutOfMap(this.bullets[b].position.x, this.bullets[b].position.y) || h || v) {
+                    this.playSmallExplodeAnimation(this.bullets[b].position.x, this.bullets[b].position.y);
                     this.app.stage.removeChild(this.bullets[b]);
                     this.bullets.splice(b, 1);
+                    this.bullets[b].destroy();
                 }
             }
         }
     }
 
+    private playSmallExplodeAnimation(x: number, y: number): void {
+        const smallExplodeArray = this.resources.smallExplode.spritesheet?.animations.explodeSmall;
+        const smallExplodeAnimation = new PIXI.AnimatedSprite(smallExplodeArray);
+
+        smallExplodeAnimation.loop = false;
+        smallExplodeAnimation.x = x;
+        smallExplodeAnimation.y = y;
+        smallExplodeAnimation.play();
+        this.app.stage.addChild(smallExplodeAnimation);
+        smallExplodeAnimation.onComplete = () => smallExplodeAnimation.destroy();
+    }
+
     public createGameScene(): void {
         this.init();
-        this.player = new Character({texture: this.textures.tank, enemyBullet: this.textures.enemyBullet, bullet: this.textures.bullet}, new PIXI.Point(this.app.renderer.width / 2, this.app.renderer.height / 2), new IdleState());
-        this.map = new Map(this.textures,  this.app.stage);
+        const texture: PIXI.Sprite = new PIXI.Sprite(this.resources.tank.texture);
+        const enemyBullet: PIXI.Sprite = new PIXI.Sprite(this.resources.enemyBullet.texture);
+        const bullet: PIXI.Sprite = new PIXI.Sprite(this.resources.bullet.texture);
+        this.player = new Character({ texture , enemyBullet, bullet}, new PIXI.Point(this.app.renderer.width / 2, this.app.renderer.height / 2), new IdleState());
+        this.map = new Map(this.resources,  this.app.stage);
         this.app.stage.addChild(this.player.texture);
         this.collider = new Collider();
         this.app.ticker.add(this.gameLoop, this);
@@ -94,5 +110,12 @@ export class GameScene {
         this.bullets.push(bullet);
         this.app.stage.addChild(bullet);
         // console.log(this.bullets);
+    }
+
+    private isOutOfMap(y: number, x: number): boolean {
+        return (y <= 0) ||
+               (x <= 0) ||
+               (y >= this.app.view.height) ||
+               (x >= this.app.view.width)
     }
 }

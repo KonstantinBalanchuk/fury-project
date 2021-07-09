@@ -156,16 +156,25 @@ export class Collider {
         };
     }
 
-    // public calculateBulletCollisions(map: Map, bullet: Bullet): { [name: string]: ICollision } {
-    //     const platform = this.collisionsWithMap(
-    //         bulletCollisionBox,
-    //         map,
-    //         bullet.predictedVx,
-    //         bullet.predictedVy
-    //     );
-    //
-    //     return {
-    //         platform
-    //     };
-    // }
+    public calculateBulletCollisions(
+      map: Map,
+      bullet: Bullet
+    ): { [name: string]: ICollision } {
+        const bulletCollisionBox: IRectShape = this.createCenteredCollisionBox({
+            x: bullet.position.x,
+            y: bullet.position.y,
+            width: bullet.width,
+            height: bullet.height
+        });
+        const platform = this.collisionsWithMap(
+            bulletCollisionBox,
+            map,
+            bullet.predictedVx,
+            bullet.predictedVy
+        );
+
+        return {
+            platform
+        };
+    }
 }
